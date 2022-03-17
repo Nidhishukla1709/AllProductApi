@@ -1,0 +1,60 @@
+Create database Shopping_Cart_db;
+Use Shopping_Cart_db;
+
+Create table Products(ID INT IDENTITY(1,1) PRIMARY KEY, Title varchar(100),Price varchar(100), Description varchar(100), Category varchar(100), Image varchar(100) );
+Create table Cart(ID INT IDENTITY(1,1) PRIMARY KEY, ProductId INT,Price varchar(100), Quantity INT, UserId INT);
+Create table Orders(ID INT IDENTITY(1,1) PRIMARY KEY, ProductId INT,Price varchar(100), Quantity INT, UserId INT);
+
+Insert into Products(Title,Description,Category,Price,Image) values('Item 1','Item 1 Description','Electronics',951,'https://picsum.photos/200')    
+Insert into Products(Title,Description,Category,Price,Image) values('Item 2','Item 2 Description','Electronics',952,'https://picsum.photos/200')    
+Insert into Products(Title,Description,Category,Price,Image) values('Item 3','Item 3 Description','Electronics',953,'https://picsum.photos/200')        
+Insert into Products(Title,Description,Category,Price,Image) values('Item 4','Item 4 Description','Electronics',954,'https://picsum.photos/200')    
+Insert into Products(Title,Description,Category,Price,Image) values('Item 5','Item 5 Description','Electronics',955,'https://picsum.photos/200')  
+Insert into Products(Title,Description,Category,Price,Image) values('Item 6','Item 6 Description','Sports',1051,'https://picsum.photos/200')    
+Insert into Products(Title,Description,Category,Price,Image) values('Item 7','Item 7 Description','Sports',1052,'https://picsum.photos/200')    
+Insert into Products(Title,Description,Category,Price,Image) values('Item 8','Item 8 Description','Sports',1053,'https://picsum.photos/200')        
+Insert into Products(Title,Description,Category,Price,Image) values('Item 9','Item 9 Description','Sports',1054,'https://picsum.photos/200')    
+Insert into Products(Title,Description,Category,Price,Image) values('Item 10','Item1 10 Description','Sports',1055,'https://picsum.photos/200')    
+
+
+SELECT * FROM Products
+
+SELECT * FROM Cart
+SELECT * FROM Orders
+
+INSERT INTO CART(ProductId,Quantity,UserId,Price)
+SELECT toP 5 ID,1,1,Price FROM Products;	
+
+CREATE procedure GetAllProducts
+AS
+BEGIN	
+		SELECT * FROM Products;
+END
+
+CREATE procedure UpdateCart(@type varchar(100), @ProductId INT, @Quantity INT)
+AS
+BEGIN	
+IF @type = 'Update'
+BEGIN
+		UPDATE CART SET Quantity = @Quantity WHERE ProductId = @ProductId;
+		END
+IF @type = 'Add'
+BEGIN
+		INSERT INTO CART(ProductId , Quantity) VALUES (@ProductId, @Quantity)
+		END
+END
+
+CREATE procedure GetCartProducts
+AS
+BEGIN	
+		SELECT P.Id,P.Title,P.Description, C.Quantity,C.UserId,C.Price FROM Cart C inner JOIN Products P ON C.ProductId = P.ID;	
+END
+
+CREATE procedure PlaceOrder
+AS
+BEGIN	
+        INSERT INTO Orders(ProductId,Quantity,UserId,Price)
+		SELECT ProductId,Quantity,UserId,Price FROM Cart;	
+
+		DELETE FROM Cart;
+END
